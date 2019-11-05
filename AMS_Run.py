@@ -9,14 +9,11 @@ import pandas as pd
 import datetime
 import time
 
-#####Window is our Main frame of system
 window = tk.Tk()
-window.title("FAMS-Face Recognition Based Attendance Management System")
+window.title("Attendance Management System")
 
 window.geometry('1280x720')
 window.configure(background='snow')
-
-####GUI for manually fill attendance
 
 def manually_fill():
     global sb
@@ -46,17 +43,13 @@ def manually_fill():
         timeStamp = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')
         Time = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')
         Hour, Minute, Second = timeStamp.split(":")
-        ####Creatting csv of attendance
 
-        ##Create table for Attendance
         date_for_DB = datetime.datetime.fromtimestamp(ts).strftime('%Y_%m_%d')
         global subb
         subb=SUB_ENTRY.get()
         DB_table_name = str(subb + "_" + Date + "_Time_" + Hour + "_" + Minute + "_" + Second)
 
         import pymysql.connections
-
-        ###Connect to the database
         try:
             global cursor
             connection = pymysql.connect(host='localhost', user='root', password='', db='manually_fill_attendance')
@@ -76,9 +69,9 @@ def manually_fill():
 
 
         try:
-            cursor.execute(sql)  ##for create a table
+            cursor.execute(sql) 
         except Exception as ex:
-            print(ex)  #
+            print(ex)
 
         if subb=='':
             err_screen_for_subject()
@@ -106,7 +99,7 @@ def manually_fill():
                        activebackground="Red", font=('times', 15, ' bold ')).place(x=90, y=50)
 
             def testVal(inStr, acttyp):
-                if acttyp == '1':  # insert
+                if acttyp == '1':  
                     if not inStr.isdigit():
                         return False
                 return True
@@ -132,8 +125,7 @@ def manually_fill():
 
             def remove_student():
                 STUDENT_ENTRY.delete(first=0, last=22)
-
-            ####get important variable
+    
             def enter_data_DB():
                 ENROLLMENT = ENR_ENTRY.get()
                 STUDENT = STUDENT_ENTRY.get()
@@ -156,10 +148,10 @@ def manually_fill():
             def create_csv():
                 import csv
                 cursor.execute("select * from " + DB_table_name + ";")
-                csv_name='C:/Users/kusha/PycharmProjects/Attendace managemnt system/Attendance/Manually Attendance/'+DB_table_name+'.csv'
+                csv_name='C:/Users/Ashwin Dhakaita/Attendace managemnt system/Attendance/Manually Attendance/'+DB_table_name+'.csv'
                 with open(csv_name, "w") as csv_file:
                     csv_writer = csv.writer(csv_file)
-                    csv_writer.writerow([i[0] for i in cursor.description])  # write headers
+                    csv_writer.writerow([i[0] for i in cursor.description])  
                     csv_writer.writerows(cursor)
                     O="CSV created Successfully"
                     Notifi.configure(text=O, bg="Green", fg="white", width=33, font=('times', 19, 'bold'))
@@ -175,8 +167,7 @@ def manually_fill():
 
                     for col in reader:
                         c = 0
-                        for row in col:
-                            # i've added some styling
+                        for row in col:                            
                             label = tkinter.Label(root, width=13, height=1, fg="black", font=('times', 13, ' bold '),
                                                   bg="lawn green", text=row, relief=tkinter.RIDGE)
                             label.grid(row=r, column=c)
@@ -210,7 +201,7 @@ def manually_fill():
 
             def attf():
                 import subprocess
-                subprocess.Popen(r'explorer /select,"C:\Users\kusha\PycharmProjects\Attendace managemnt system\Attendance\Manually Attendance\-------Check atttendance-------"')
+                subprocess.Popen(r'explorer /select,"C:\Users\Ashwin Dhakaita\Attendace managemnt system\Attendance\Manually Attendance\"')
 
             attf = tk.Button(MFW,  text="Check Sheets",command=attf,fg="black"  ,bg="lawn green"  ,width=12  ,height=1 ,activebackground = "Red" ,font=('times', 14, ' bold '))
             attf.place(x=730, y=410)
@@ -231,7 +222,6 @@ def manually_fill():
     fill_manual_attendance.place(x=250, y=160)
     sb.mainloop()
 
-##For clear textbox
 def clear():
     txt.delete(first=0, last=22)
 
@@ -249,7 +239,6 @@ def err_screen():
     Label(sc1,text='Enrollment & Name required!!!',fg='red',bg='white',font=('times', 16, ' bold ')).pack()
     Button(sc1,text='OK',command=del_sc1,fg="black"  ,bg="lawn green"  ,width=9  ,height=1, activebackground = "Red" ,font=('times', 15, ' bold ')).place(x=90,y= 50)
 
-##Error screen2
 def del_sc2():
     sc2.destroy()
 def err_screen1():
@@ -262,7 +251,6 @@ def err_screen1():
     Label(sc2,text='Please enter your subject name!!!',fg='red',bg='white',font=('times', 16, ' bold ')).pack()
     Button(sc2,text='OK',command=del_sc2,fg="black"  ,bg="lawn green"  ,width=9  ,height=1, activebackground = "Red" ,font=('times', 15, ' bold ')).place(x=90,y= 50)
 
-###For take images for datasets
 def take_img():
     l1 = txt.get()
     l2 = txt2.get()
@@ -283,16 +271,15 @@ def take_img():
                 faces = detector.detectMultiScale(gray, 1.3, 5)
                 for (x, y, w, h) in faces:
                     cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-                    # incrementing sample number
                     sampleNum = sampleNum + 1
-                    # saving the captured face in the dataset folder
+                
                     cv2.imwrite("TrainingImage/ " + Name + "." + Enrollment + '.' + str(sampleNum) + ".jpg",
                                 gray[y:y + h, x:x + w])
                     cv2.imshow('Frame', img)
-                # wait for 100 miliseconds
+
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-                # break if the sample number is morethan 100
+
                 elif sampleNum > 70:
                     break
             cam.release()
@@ -313,18 +300,16 @@ def take_img():
             Notification.configure(text=f, bg="Red", width=21)
             Notification.place(x=450, y=400)
 
-
-###for choose subject and fill attendance
 def subjectchoose():
     def Fillattendances():
         sub=tx.get()
-        now = time.time()  ###For calculate seconds of video
+        now = time.time()  
         future = now + 20
         if time.time() < future:
             if sub == '':
                 err_screen1()
             else:
-                recognizer = cv2.face.LBPHFaceRecognizer_create()  # cv2.createLBPHFaceRecognizer()
+                recognizer = cv2.face.LBPHFaceRecognizer_create()  
                 try:
                     recognizer.read("TrainingImageLabel\Trainner.yml")
                 except:
@@ -387,13 +372,11 @@ def subjectchoose():
                 attendance = attendance.drop_duplicates(['Enrollment'], keep='first')
                 print(attendance)
                 attendance.to_csv(fileName, index=False)
-
-                ##Create table for Attendance
+                
                 date_for_DB = datetime.datetime.fromtimestamp(ts).strftime('%Y_%m_%d')
                 DB_Table_name = str( Subject + "_" + date_for_DB + "_Time_" + Hour + "_" + Minute + "_" + Second)
                 import pymysql.connections
-
-                ###Connect to the database
+        
                 try:
                     global cursor
                     connection = pymysql.connect(host='localhost', user='root', password='', db='Face_reco_fill')
@@ -410,14 +393,13 @@ def subjectchoose():
                      PRIMARY KEY (ID)
                      );
                 """
-                ####Now enter attendance in Database
                 insert_data =  "INSERT INTO " + DB_Table_name + " (ID,ENROLLMENT,NAME,DATE,TIME) VALUES (0, %s, %s, %s,%s)"
                 VALUES = (str(Id), str(aa), str(date), str(timeStamp))
                 try:
-                    cursor.execute(sql)  ##for create a table
-                    cursor.execute(insert_data, VALUES)##For insert data into table
+                    cursor.execute(sql)  
+                    cursor.execute(insert_data, VALUES)
                 except Exception as ex:
-                    print(ex)  #
+                    print(ex)  
 
                 M = 'Attendance filled Successfully'
                 Notifica.configure(text=M, bg="Green", fg="white", width=33, font=('times', 15, 'bold'))
@@ -431,15 +413,14 @@ def subjectchoose():
                 root = tkinter.Tk()
                 root.title("Attendance of " + Subject)
                 root.configure(background='snow')
-                cs = 'C:/Users/kusha/PycharmProjects/Attendace managemnt system/' + fileName
+                cs = 'C:/Users/Ashwin Dhakaita/Attendace managemnt system/' + fileName
                 with open(cs, newline="") as file:
                     reader = csv.reader(file)
                     r = 0
 
                     for col in reader:
                         c = 0
-                        for row in col:
-                            # i've added some styling
+                        for row in col:                
                             label = tkinter.Label(root, width=8, height=1, fg="black", font=('times', 15, ' bold '),
                                                   bg="lawn green", text=row, relief=tkinter.RIDGE)
                             label.grid(row=r, column=c)
@@ -448,7 +429,6 @@ def subjectchoose():
                 root.mainloop()
                 print(attendance)
 
-    ###windo is frame for subject chooser
     windo = tk.Tk()
     windo.iconbitmap('AMS.ico')
     windo.title("Enter subject name...")
@@ -459,7 +439,7 @@ def subjectchoose():
 
     def Attf():
         import subprocess
-        subprocess.Popen(r'explorer /select,"C:\Users\kusha\PycharmProjects\Attendace managemnt system\Attendance\-------Check atttendance-------"')
+        subprocess.Popen(r'explorer /select,"C:\Users\Ashwin Dhakaita\Attendace managemnt system\Attendance\-------Check atttendance-------"')
 
     attf = tk.Button(windo,  text="Check Sheets",command=Attf,fg="black"  ,bg="lawn green"  ,width=12  ,height=1 ,activebackground = "Red" ,font=('times', 14, ' bold '))
     attf.place(x=430, y=255)
@@ -486,8 +466,8 @@ def admin_panel():
         username = un_entr.get()
         password = pw_entr.get()
 
-        if username == 'kushal' :
-            if password == 'kushal14320':
+        if username == 'Aman Jain' :
+            if password == '301032':
                 win.destroy()
                 import csv
                 import tkinter
@@ -495,7 +475,7 @@ def admin_panel():
                 root.title("Student Details")
                 root.configure(background='snow')
 
-                cs = 'C:/Users/kusha/PycharmProjects/Attendace managemnt system/StudentDetails/StudentDetails.csv'
+                cs = 'C:/Users/Ashwin Dhakaita/Attendace managemnt system/StudentDetails/StudentDetails.csv'
                 with open(cs, newline="") as file:
                     reader = csv.reader(file)
                     r = 0
@@ -503,7 +483,6 @@ def admin_panel():
                     for col in reader:
                         c = 0
                         for row in col:
-                            # i've added some styling
                             label = tkinter.Label(root, width=8, height=1, fg="black", font=('times', 15, ' bold '),
                                                   bg="lawn green", text=row, relief=tkinter.RIDGE)
                             label.grid(row=r, column=c)
@@ -523,7 +502,6 @@ def admin_panel():
 
     Nt = tk.Label(win, text="Attendance filled Successfully", bg="Green", fg="white", width=40,
                   height=2, font=('times', 19, 'bold'))
-    # Nt.place(x=120, y=350)
 
     un = tk.Label(win, text="Enter username", width=15, height=2, fg="white", bg="blue2",
                    font=('times', 15, ' bold '))
@@ -559,8 +537,6 @@ def admin_panel():
     Login.place(x=290, y=250)
     win.mainloop()
 
-
-###For train the model
 def trainimg():
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     global detector
@@ -581,28 +557,19 @@ def trainimg():
         Notification.configure(text=q, bg="SpringGreen3", width=50, font=('times', 18, 'bold'))
         Notification.place(x=350, y=400)
 
-    res = "Model Trained"  # +",".join(str(f) for f in Id)
+    res = "Model Trained"  
     Notification.configure(text=res, bg="SpringGreen3", width=50, font=('times', 18, 'bold'))
     Notification.place(x=250, y=400)
 
 def getImagesAndLabels(path):
     imagePaths = [os.path.join(path, f) for f in os.listdir(path)]
-    # create empth face list
     faceSamples = []
-    # create empty ID list
-    Ids = []
-    # now looping through all the image paths and loading the Ids and the images
+    Ids = []    
     for imagePath in imagePaths:
-        # loading the image and converting it to gray scale
         pilImage = Image.open(imagePath).convert('L')
-        # Now we are converting the PIL image into numpy array
         imageNp = np.array(pilImage, 'uint8')
-        # getting the Id from the image
-
         Id = int(os.path.split(imagePath)[-1].split(".")[1])
-        # extract the face from the training image sample
         faces = detector.detectMultiScale(imageNp)
-        # If a face is there then append that in the list as well as Id of it
         for (x, y, w, h) in faces:
             faceSamples.append(imageNp[y:y + h, x:x + w])
             Ids.append(Id)
@@ -618,7 +585,7 @@ def on_closing():
         window.destroy()
 window.protocol("WM_DELETE_WINDOW", on_closing)
 
-message = tk.Label(window, text="Face-Recognition-Based-Attendance-Management-System", bg="cyan", fg="black", width=50,
+message = tk.Label(window, text="Attendance-Management-System", bg="cyan", fg="black", width=50,
                    height=3, font=('times', 30, 'italic bold '))
 
 message.place(x=80, y=20)
@@ -630,7 +597,7 @@ lbl = tk.Label(window, text="Enter Enrollment", width=20, height=2, fg="black", 
 lbl.place(x=200, y=200)
 
 def testVal(inStr,acttyp):
-    if acttyp == '1': #insert
+    if acttyp == '1': 
         if not inStr.isdigit():
             return False
     return True
