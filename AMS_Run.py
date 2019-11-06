@@ -447,11 +447,11 @@ def subjectchoose():
     sub = tk.Label(windo, text="Enter Subject", width=15, height=2, fg="black", bg="white", font=('times', 15, ' bold '))
     sub.place(x=30, y=100)
 
-    tx = tk.Entry(windo, width=20, bg="white", fg="black", font=('times', 23, ' bold '))
+    tx = tk.Entry(windo, width=20, bg="light gray", fg="black", font=('times', 23, ' bold '))
     tx.place(x=250, y=105)
 
-    fill_a = tk.Button(windo, text="Fill Attendance", fg="white",command=Fillattendances, bg="white", width=20, height=2,
-                       activebackground="Red", font=('times', 15, ' bold '))
+    fill_a = tk.Button(windo, text="Fill Attendance", fg="black",command=Fillattendances, bg="white", width=20, height=2,
+                       activebackground="gray", font=('times', 15, ' bold '))
     fill_a.place(x=250, y=160)
     windo.mainloop()
 
